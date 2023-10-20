@@ -25,6 +25,7 @@ ENTERO {DIGITO}({DIGITO})*
 ")" {return PARENTESISDERECHO;}
 "+" {return SUMA;}
 "-" {return RESTA;}
+.   {errorLexico();}
 
 "calcularFecha" {return CALCULARFECHA;}
 "calcularEdad" {return CALCULAREDAD;}
@@ -40,9 +41,33 @@ ENTERO {DIGITO}({DIGITO})*
 %%
 
 
-void showError(){
-    printf("Other input");
+vvoid errorLexico(void){
+	cout << "Error léxico: caracter \"" << yytext << "\" inválido. En linea " << yylineno << "." << endl;
+	exit(0);
 }
+
 int yywrap(){
     return 1;
+}
+
+int main(int num_args, char** args) {
+  if(num_args != 2) {
+	cout << "Para analizar un archivo, ejecute: ./Micro <nombre del archivo>";
+	cout << endl;
+	cout << "Entrada estandar. (Para terminar presione CTRL + C)" << endl;
+	yyparse();
+  }
+  else{
+  		FILE* archivo = fopen(args[1],"r");
+  		if(archivo == NULL) {
+			cout << "Error al abrir el archivo " << args[1] << endl;
+			cout << "Entrada estandar. (Para terminar presione CTRL + C)" << endl;
+			yyparse();
+	  	}
+  		else{
+	  		yyin = archivo;
+	  		yyparse();
+	  		fclose(archivo);
+	  	    }
+  	}
 }
