@@ -15,6 +15,16 @@ ENTERO {DIGITO}({DIGITO})*
 
 %%
 
+"calcularFecha" {return CALCULARFECHA;}
+"calcularEdad" {return CALCULAREDAD;}
+"mostrarEdad" {return MOSTRAREDAD;}
+
+"int" {return ENTERO;}
+
+"inicio" {return INICIO;}
+"fin" {return FIN;}
+
+
 {IDENTIFICADOR}    {sscanf(yytext, "%s", yylval.name); return ID;}
 {ENTERO}      {yylval.number = atoi(yytext); return NUM;}
 
@@ -25,18 +35,9 @@ ENTERO {DIGITO}({DIGITO})*
 ")" {return PARENTESISDERECHO;}
 "+" {return SUMA;}
 "-" {return RESTA;}
+
 .   {errorLexico();}
-
-"calcularFecha" {return CALCULARFECHA;}
-"calcularEdad" {return CALCULAREDAD;}
-"mostrarEdad" {return MOSTRAREDAD;}
-
-"int" {return ENTERO;}
-
-"inicio" {return INICIO;}
-"fin" {return FIN;}
-
-.      		     {showError(); return(OTHER);}
+.   {showError(); return(OTHER);}
 
 %%
 

@@ -25,7 +25,7 @@ int anio_n=0;
 
 %token ASIGNACION PUNTO SUMA RESTA PARENTESISIZQUIERDO PARENTESISDERECHO COMA
 %token <cadena> ID
-%token <num> ENTERO
+%token <num> NUMERO
 
 %%
 
@@ -35,7 +35,7 @@ programa: inicio sentencias fin
 sentencias: sentencia sentencias | sentencia
 ;
 
-sentencia: int ID.| int ID ASIGNACION ENTERO PUNTO | ID ASIGNACION expresion PUNTO | ID ASIGNACION calcularFecha PARENTESISIZQUIERDO listaIdentificadores PARENTESISDERECHO PUNTO | ID ASIGNACION calcularEdad PARENTESISIZQUIERDO listaIdentificadores PARENTESISDERECHO PUNTO | mostrarFecha PARENTESISIZQUIERDO ID PARENTESISDERECHO PUNTO
+sentencia: ENTERO ID PUNTO| ENTERO ID ASIGNACION NUMERO PUNTO | ID ASIGNACION expresion PUNTO | ID ASIGNACION calcularFecha PARENTESISIZQUIERDO listaIdentificadores PARENTESISDERECHO PUNTO | ID ASIGNACION calcularEdad PARENTESISIZQUIERDO listaIdentificadores PARENTESISDERECHO PUNTO | mostrarFecha PARENTESISIZQUIERDO ID PARENTESISDERECHO PUNTO
 ;
 
 listaIdentificadores: ID COMA listaIdentificadores | ID
