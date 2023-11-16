@@ -35,10 +35,10 @@ programa: inicio sentencias fin
 sentencias: sentencia sentencias | sentencia
 ;
 
-sentencia: ENTERO ID PUNTO| ENTERO ID ASIGNACION NUMERO PUNTO | ID ASIGNACION expresion PUNTO | ID ASIGNACION calcularFecha PARENTESISIZQUIERDO listaIdentificadores PARENTESISDERECHO PUNTO | ID ASIGNACION calcularEdad PARENTESISIZQUIERDO listaIdentificadores PARENTESISDERECHO PUNTO | mostrarFecha PARENTESISIZQUIERDO ID PARENTESISDERECHO PUNTO
+sentencia: ENTERO ID PUNTO| ENTERO ID ASIGNACION NUMERO PUNTO | ID ASIGNACION expresion PUNTO | ID ASIGNACION calcularFecha PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO | ID ASIGNACION calcularEdad PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO | mostrarFecha PARENTESISIZQUIERDO ID PARENTESISDERECHO PUNTO
 ;
 
-listaIdentificadores: ID COMA listaIdentificadores | ID
+
 
 expresion: primaria 
 | expresion operadorAditivo primaria 
@@ -53,6 +53,18 @@ primaria: ID
 |PARENTESISIZQUIERDO expresion PARENTESISDERECHO
 ;
 
+expresion : 
+    primaria {$$ = $1; }
+    | expresion SUMA expresion { $$ = $1 + $3;  }
+    | expresion RESTA expresion { $$ = $1 - $3;  }
+
+sentencia : 
+    ENTERO ID PUNTO  -- CREA VARIABLE -- 
+    | ENTERO ID ASIGNACION NUMERO PUNTO { ID = $4; }
+    | ID ASIGNACION expresion PUNTO { ID = $3; }
+    | ID ASIGNACION calcularFecha PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO  { ID = calcularFecha($5, $7, $9); }
+    | ID ASIGNACION calcularEdad PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO  { ID = calcularEdad($5, $7); }
+    | mostrarFecha PARENTESISIZQUIERDO ID PARENTESISDERECHO PUNTO { mostrarFecha($3) }
 %%
 
 int yyerror(char *s)
@@ -65,4 +77,43 @@ int main()
 {
     yyparse();
     return 0;
+}
+
+int calcularEdad(int fechaActual, int fechaNacimiento) {
+    int dia_a = fechaActual % 100;
+    int mes_a = (fechaActual % 10000 - dia_a) / 100;
+    int anio_a = fechaActual / 10000;
+    int dia_n = fechaNacimiento % 100;
+    int mes_n = (fechaNacimiento % 10000 - dia_n) / 100;
+    int anio_n = fechaNacimiento / 10000;
+
+    int edad_a = anio_a - anio_n;
+    int edad_m = mes_a - mes_m;
+    int edad_d = dia_a - dia_n;
+    int aux;
+    
+    if(edad_m < 0) {
+        edad_a--;
+        aux = 12 - edad_m;
+        edad_m = aux;
+    }
+
+    if(edad_d < 0) {
+        edad_m--;
+        aux = 30 - edad_d;
+        edad_d = aux;
+    }
+    return edad_a * 10000 + edad_m * 100 + edad_d 
+}
+
+void mostrarFecha ( int edad){
+    int edad_d = edad % 100;
+    int edad_m = (edad % 10000 - edad_d) / 100;
+    int edad_a = edad / 10000;
+
+    printf("Usted tiene %s años, %s meses y %s dias\n", edad_a, edad_m, edad_d);
+}
+
+int calcularFecha(int anio, int mes, int dia){
+    return anio * 10000 + mes * 100 + dia
 }
