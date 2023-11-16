@@ -4,6 +4,17 @@
 #include <stdio.h>
 #include <stdlib.h> 
 
+struct Variable{
+    char* nombre;
+    int valor;
+};
+
+struct Nodo{
+    struct Variable info;
+    struct Nodo*sig;
+};
+
+
 int yylex(); 
 int yyerror(char*);
 int main(int argc, char **argv);
@@ -12,19 +23,11 @@ void mostrarEdad ( int edad);
 int calcularFecha(int anio, int mes, int dia);
 void asignarValorA(char* unIdentificador, int unValor);
 void cambiarValorA(char* unIdentificador, int unValor);
-void insertar(Nodo*&lista,Variable var);
-void reemplazarEn(Nodo*lista,char* unIdentificador, int unValor);
-Nodo*buscar(Nodo*lista, char* unIdentificador);
+void insertar(struct Nodo*lista, struct Variable var);
+void reemplazarEn(struct Nodo*lista, char* unIdentificador, int unValor);
+struct Nodo*buscar(struct Nodo*lista, char* unIdentificador);
 
-struct Variable{
-    char* nombre;
-    int valor;
-};
-
-struct Nodo{
-    Variable info;
-    Nodo*sig;
-};
+struct Nodo* lista = NULL;
 
 %}
 
@@ -73,11 +76,11 @@ PRIMARIA: ID { $$ = (buscar(lista, $1)->info.valor); }
 
 %%
 
-struct Nodo* lista = NULL;
+
 
 int yyerror(char *s)
 {
-	printf(" -> Error sintactico en %s\n", s);
+	printf(" -> Error sintactico \n", s);
 	return 0;
 }
 
@@ -96,7 +99,7 @@ int calcularEdad(int fechaActual, int fechaNacimiento) {
     int anio_n = fechaNacimiento / 10000;
 
     int edad_a = anio_a - anio_n;
-    int edad_m = mes_a - mes_m;
+    int edad_m = mes_a - mes_n;
     int edad_d = dia_a - dia_n;
     int aux;
     
@@ -134,18 +137,18 @@ void asignarValorA(char* unIdentificador, int unValor) {
 }
 
 void cambiarValorA(char* unIdentificador, int unValor) {
-    Variable aux;
+    struct Variable aux;
     aux.nombre = unIdentificador;
     aux.valor = unValor;
     reemplazarEn(lista, unIdentificador, unValor);
 }
 
-void insertar(Nodo*&lista,Variable var)
+void insertar(struct Nodo*lista,struct Variable var)
 {
-    Nodo *n,*p,*ant;
-    n=new Nodo;
-    n->info=var;
-    p=lista;
+    struct Nodo *n,*p,*ant;
+    n = NULL;
+    n->info = var;
+    p = lista;
     while(p!=NULL)
     {
         ant=p;
@@ -158,20 +161,20 @@ void insertar(Nodo*&lista,Variable var)
         lista=n;
 }
 
-void reemplazarEn(Nodo*lista,char* unIdentificador, int unValor)
+void reemplazarEn(struct Nodo*lista,char* unIdentificador, int unValor)
 {
-    
-    Nodo*objetivo=buscar(lista, unIdentificador);
+    struct Nodo*objetivo=buscar(lista, unIdentificador);
     if(objetivo == NULL)
-        cout<<"no existe un identificador con nombre"<<endl;
+        printf("Esta intentando asignar %d a un identificador : %s que no existe", unValor, unIdentificador);
     else
         objetivo->info.valor = unValor;
 }
 
-Nodo*buscar(Nodo*lista, char* unIdentificador)
+struct Nodo*buscar(struct Nodo*lista, char* unIdentificador)
 {
-    Nodo*p=lista;
+    struct Nodo*p=lista;
     while(p!=NULL && p->info.nombre != unIdentificador)
         p=p->sig;
     return p;
 }
+

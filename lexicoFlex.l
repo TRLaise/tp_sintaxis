@@ -6,11 +6,14 @@
 void errorLexico();
 %}
 
+
+%option yylineno
+
 DIGITO ([0-9])
 LETRA ([a-z])
 GUION (_)
 /* {LETRA})({LETRA|GUION} */
-IDENTIFICADOR (LETRA)(LETRA|GUION)*
+IDENTIFICADOR {LETRA}(LETRA|GUION)*
 NUMERO {DIGITO}({DIGITO})*
 
 %%
@@ -21,22 +24,22 @@ NUMERO {DIGITO}({DIGITO})*
 
 "int" 				{yylval.reservada = yytext; return ENTERO;}
 
-"inicio" 			{yylval.reservada = yytext; return INICIO;}
-"fin" 				{yylval.reservada = yytext; return FIN;}
+"inicio" 			{ return INICIO;}
+"fin" 				{ return FIN;}
 
 "es" 				{yylval.reservada = yytext; return ASIGNACION;}
 
-{IDENTIFICADOR}     {sscanf(yytext, "%s", yylval.cadena); return (ID);}
+{IDENTIFICADOR}     {yylval.reservada = yytext; return (ID);}
 {NUMERO}      		{yylval.number = atoi(yytext); return NUMERO;}
 
 
-"." {return PUNTO;}
-"," {return COMA;}
-"(" {return PARENTESISIZQUIERDO;}
-")" {return PARENTESISDERECHO;}
-"+" {return SUMA;}
-"-" {return RESTA;}
-[ \t\r]	{} // para reconocer los saltos de linea
+"." 				{return PUNTO;}
+"," 				{return COMA;}
+"(" 				{return PARENTESISIZQUIERDO;}
+")" 				{return PARENTESISDERECHO;}
+"+" 				{return SUMA;}
+"-" 				{return RESTA;}
+[ \t\n]+			; // para reconocer los saltos de linea
 
 .   {errorLexico(); return(OTHER);}
 
@@ -44,16 +47,16 @@ NUMERO {DIGITO}({DIGITO})*
  
 
 void errorLexico(char* other){
-	printf("	<<ErrorLexico:  \"%s\" >>", other);
+	printf("	<<ErrorLexico: caracter %s, en la linea %d>>", yytext, yylineno);
 	exit(0); 
 }
 
-/*
+
 
 int yywrap(){
     return 1;
 }
-
+/*
 int main(int num_args, char** args) {
   if(num_args != 2) {
 	cout << "Para analizar un archivo, ejecute: ./Micro <nombre del archivo>";
