@@ -2,32 +2,34 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "test.tab.h"
+#include "sintacticoBison.tab.h"
 void showError();
 %}
 
-DIGITO [0-9]
-LETRA [a-z]
-GUION "_"
-
-IDENTIFICADOR {LETRA}({LETRA|GUION})*
+DIGITO ([0-9])
+LETRA ([a-z])
+GUION (_)
+/* {LETRA})({LETRA|GUION} */
+IDENTIFICADOR (LETRA)(LETRA|GUION)*
 NUMERO {DIGITO}({DIGITO})*
 
 %%
 
-"calcularFecha" {return CALCULARFECHA;}
-"calcularEdad" {return CALCULAREDAD;}
-"mostrarEdad" {return MOSTRAREDAD;}
+"calcularFecha" 	{yyval.reservada = yytext; return CALCULARFECHA;}
+"calcularEdad" 		{yyval.reservada = yytext; return CALCULAREDAD;}
+"mostrarEdad" 		{yyval.reservada = yytext; return MOSTRAREDAD;}
 
-"int" {return ENTERO;}
+"int" 				{yyval.reservada = yytext; return ENTERO;}
 
-"inicio" {return INICIO;}
-"fin" {return FIN;}
+"inicio" 			{yyval.reservada = yytext; return INICIO;}
+"fin" 				{yyval.reservada = yytext; return FIN;}
 
-{IDENTIFICADOR}    {sscanf(yytext, "%s", yylval.name); return ID;}
-{ENTERO}      {yylval.number = atoi(yytext); return NUM;}
+"es" 				{yyval.reservada = yytext; return ASIGNACION;}
 
-"es" {return ASIGNACION;}
+{IDENTIFICADOR}     {sscanf(yytext, "%s", yylval.cad); return (ID);}
+{NUMERO}      		{yylval.number = atoi(yytext); return NUMERO;}
+
+
 "." {return PUNTO;}
 "," {return COMA;}
 "(" {return PARENTESISIZQUIERDO;}
@@ -35,16 +37,18 @@ NUMERO {DIGITO}({DIGITO})*
 "+" {return SUMA;}
 "-" {return RESTA;}
 
-.   {errorLexico();}
-.   {showError(); return(OTHER);}
+.   {errorLexico(); return(OTHER);}
 
 %%
 
 
-vvoid errorLexico(void){
+vvoid errorLexico(char* other){
+	printf("	<<ErrorLexico:  \"%s\" >>".other);
 	cout << "Error léxico: caracter \"" << yytext << "\" inválido. En linea " << yylineno << "." << endl;
 	exit(0);
 }
+
+/*
 
 int yywrap(){
     return 1;
@@ -71,3 +75,4 @@ int main(int num_args, char** args) {
 	  	    }
   	}
 }
+*/

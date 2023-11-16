@@ -1,20 +1,10 @@
-/* desconozco como hacer las sumas, restas, operaciones y demas, se que tienen que delegarse a lenguaje C, pero falta investigar*/
+
 %{
 
 #include <stdio.h>
 #include <stdlib.h> 
-#include <math.h>
-extern char *yytext;
-extern int yyleng;
-extern int yylex(void);
-extern int yyerror(char*);
-
-int dia_a=0;
-int mes_a=0;
-int anio_a=0;
-int dia_n=0;
-int mes_n=0;
-int anio_n=0;
+int yylex();
+int yyerror(char*);
 
 struct {
     char* nombre;
@@ -30,62 +20,58 @@ Nodo lista = NULL;
 
 %}
 
+%token ASIGNACION PUNTO SUMA RESTA PARENTESISIZQUIERDO PARENTESISDERECHO COMA OTHER ID NUMERO CALCULARFECHA CALCULAREDAD MOSTRAREDAD INICIO FIN ENTERO
+
 %union{
-   char* cadena;
-   int num;
+   char cadena[30];
+   int number;
+   char* reservada;
 } 
 
-%token ASIGNACION PUNTO SUMA RESTA PARENTESISIZQUIERDO PARENTESISDERECHO COMA
-%token <cadena> ID
-%token <num> NUMERO
+%type <cadena> ID
+%type <number> NUMERO EXPRESION PRIMARIA
+%type <reservada> MOSTRAREDAD CALCULARFECHA CALCULAREDAD INICIO FIN ENTERO
 
 %%
 
-programa: inicio sentencias fin
+prog: 
+    INICIO SENTENCIAS FIN
 ;
 
-sentencias: sentencia sentencias | sentencia
+SENTENCIAS: SENTENCIA SENTENCIAS  
+        | SENTENCIA
 ;
 
-sentencia: ENTERO ID PUNTO | ENTERO ID ASIGNACION NUMERO PUNTO | ID ASIGNACION expresion PUNTO | ID ASIGNACION calcularFecha PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO | ID ASIGNACION calcularEdad PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO | mostrarFecha PARENTESISIZQUIERDO ID PARENTESISDERECHO PUNTO
+SENTENCIA: ENTERO ID PUNTO {asignarValorA($2, 0);}
+        | ENTERO ID ASIGNACION NUMERO PUNTO { asignarValorA($2, $4); }
+        | ID ASIGNACION EXPRESION PUNTO { cambiarValorA($1, $3); }
+        | ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO { asignarValorA($1, calcularFecha($5, $7, $9)); } // SI ME DAN 3 NUMEROS
+        | ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO { asignarValorA($1, calcularEdad($5, $7)); } // SI ME DAN 2 NUMEROS
+        | ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID COMA ID PARENTESISDERECHO PUNTO { asignarValorA($1, calcularFecha(buscar(lista, $5)->info.valor, buscar(lista, $7)->info.valor, buscar(lista, $9)->info.valor)); } // SI ME DAN 3 IDENTIFICADORES
+        | ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO ID COMA ID PARENTESISDERECHO PUNTO { asignarValorA($1, calcularEdad(buscar(lista, $5)->info.valor, buscar(lista, $7)->info.valor)); } // SI ME DAN 2 IDENTIFICADORES
+        | MOSTRAREDAD PARENTESISIZQUIERDO ID PARENTESISDERECHO PUNTO { mostrarEdad(buscar(lista, $3)->info.valor) }
 ;
 
 
-
-expresion: primaria 
-| expresion operadorAditivo primaria 
+EXPRESION: PRIMARIA {$$ = $1; }
+        | EXPRESION SUMA PRIMARIA { $$ = $1 + $3; }
+        | EXPRESION RESTA PRIMARIA { $$ = $1 - $3; }
 ; 
 
-operadorAditivo: SUMA 
-| RESTA
+PRIMARIA: ID { $$ = (buscar(lista, $1)->info.valor); }
+        |NUMERO { $$ = $1 ; }
+        |PARENTESISIZQUIERDO EXPRESION PARENTESISDERECHO { $$ = $2; }
 ;
 
-primaria: ID
-|CONSTANTE {}
-|PARENTESISIZQUIERDO expresion PARENTESISDERECHO
-;
-
-expresion : 
-    primaria {$$ = $1; }
-    | expresion SUMA expresion { $$ = $1 + $3; }
-    | expresion RESTA expresion { $$ = $1 - $3; }
-
-sentencia : 
-    | ENTERO ID PUNTO {asignarValorA($2, 0);}
-    | ENTERO ID ASIGNACION NUMERO PUNTO { asignarValorA($2, $4); }
-    | ID ASIGNACION expresion PUNTO { cambiarValorA($1, $3); }
-    | ID ASIGNACION calcularFecha PARENTESISIZQUIERDO ID COMA ID COMA ID PARENTESISDERECHO PUNTO  { asignarValorA($1,calcularFecha($5, $7, $9)); }
-    | ID ASIGNACION calcularEdad PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO  { asignarValorA($1,calcularEdad($5, $7)); }
-    | mostrarFecha PARENTESISIZQUIERDO ID PARENTESISDERECHO PUNTO { mostrarFecha(buscar(lista, $3)->info.valor) }
 %%
 
 int yyerror(char *s)
 {
-	printf("Syntax Error on line %s\n", s);
+	printf(" -> Error sintactico en %s\n", s);
 	return 0;
 }
 
-int main()
+int main(int argc, char **argv)
 {
     yyparse();
     return 0;
@@ -118,7 +104,7 @@ int calcularEdad(int fechaActual, int fechaNacimiento) {
     return edad_a * 10000 + edad_m * 100 + edad_d 
 }
 
-void mostrarFecha ( int edad){
+void mostrarEdad ( int edad){
     int edad_d = edad % 100;
     int edad_m = (edad % 10000 - edad_d) / 100;
     int edad_a = edad / 10000;
