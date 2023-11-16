@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "sintacticoBison.tab.h"
-void showError();
+void errorLexico();
 %}
 
 DIGITO ([0-9])
@@ -15,16 +15,16 @@ NUMERO {DIGITO}({DIGITO})*
 
 %%
 
-"calcularFecha" 	{yyval.reservada = yytext; return CALCULARFECHA;}
-"calcularEdad" 		{yyval.reservada = yytext; return CALCULAREDAD;}
-"mostrarEdad" 		{yyval.reservada = yytext; return MOSTRAREDAD;}
+"calcularFecha" 	{yylval.reservada = yytext; return CALCULARFECHA;}
+"calcularEdad" 		{yylval.reservada = yytext; return CALCULAREDAD;}
+"mostrarEdad" 		{yylval.reservada = yytext; return MOSTRAREDAD;}
 
-"int" 				{yyval.reservada = yytext; return ENTERO;}
+"int" 				{yylval.reservada = yytext; return ENTERO;}
 
-"inicio" 			{yyval.reservada = yytext; return INICIO;}
-"fin" 				{yyval.reservada = yytext; return FIN;}
+"inicio" 			{yylval.reservada = yytext; return INICIO;}
+"fin" 				{yylval.reservada = yytext; return FIN;}
 
-"es" 				{yyval.reservada = yytext; return ASIGNACION;}
+"es" 				{yylval.reservada = yytext; return ASIGNACION;}
 
 {IDENTIFICADOR}     {sscanf(yytext, "%s", yylval.cadena); return (ID);}
 {NUMERO}      		{yylval.number = atoi(yytext); return NUMERO;}
@@ -43,9 +43,8 @@ NUMERO {DIGITO}({DIGITO})*
 %%
  
 
-vvoid errorLexico(char* other){
-	printf("	<<ErrorLexico:  \"%s\" >>".other);
-	cout << "Error léxico: caracter \"" << yytext << "\" inválido. En linea " << yylineno << "." << endl;
+void errorLexico(char* other){
+	printf("	<<ErrorLexico:  \"%s\" >>", other);
 	exit(0); 
 }
 

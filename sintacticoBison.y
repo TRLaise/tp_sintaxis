@@ -3,20 +3,28 @@
 
 #include <stdio.h>
 #include <stdlib.h> 
-int yylex();
-int yyerror(char*);
 
-struct {
+int yylex(); 
+int yyerror(char*);
+int main(int argc, char **argv);
+int calcularEdad(int fechaActual, int fechaNacimiento);
+void mostrarEdad ( int edad);
+int calcularFecha(int anio, int mes, int dia);
+void asignarValorA(char* unIdentificador, int unValor);
+void cambiarValorA(char* unIdentificador, int unValor);
+void insertar(Nodo*&lista,Variable var);
+void reemplazarEn(Nodo*lista,char* unIdentificador, int unValor);
+Nodo*buscar(Nodo*lista, char* unIdentificador);
+
+struct Variable{
     char* nombre;
     int valor;
-}Variable;
+};
 
 struct Nodo{
     Variable info;
     Nodo*sig;
-}
-
-Nodo lista = NULL;
+};
 
 %}
 
@@ -64,6 +72,8 @@ PRIMARIA: ID { $$ = (buscar(lista, $1)->info.valor); }
 ;
 
 %%
+
+struct Nodo* lista = NULL;
 
 int yyerror(char *s)
 {
@@ -117,7 +127,7 @@ int calcularFecha(int anio, int mes, int dia){
 }
 
 void asignarValorA(char* unIdentificador, int unValor) {
-    Variable aux;
+    struct Variable aux;
     aux.nombre = unIdentificador;
     aux.valor = unValor;
     insertar(lista, aux);
