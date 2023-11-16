@@ -55,15 +55,15 @@ struct Nodo* lista = NULL;
 %%
 
 prog: 
-    INICIO sentencias FIN
+    INICIO { printf("Regla: INICIO\n")} sentencias { printf("Regla: sentencias\n")} FIN { printf("Regla: FIN\n")};
 ;
 
-sentencias: sentencias sentencia
-        | sentencia
+sentencias : sentencias sentencia { printf("Regla:sentencias sentencia\n")}
+        | sentencia {printf("Entro a sentencia\n")}
 ;
 
-sentencia: ENTERO ID PUNTO {asignarValorA($2, 0);};
-        | ENTERO ID ASIGNACION NUMERO PUNTO { asignarValorA($2, $4); };
+sentencia: ENTERO ID PUNTO {printf("Regla: ENTERO ID PUNTO\n"); asignarValorA($2, 0);};
+        | ENTERO ID ASIGNACION NUMERO PUNTO { asignarValorA($2, $4); }; 
         | ID ASIGNACION expresion PUNTO { cambiarValorA($1, $3); };
         | ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO { asignarValorA($1, calcularFecha($5, $7, $9)); }; // SI ME DAN 3 NUMEROS
         | ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO { asignarValorA($1, calcularEdad($5, $7)); }; // SI ME DAN 2 NUMEROS
@@ -73,14 +73,14 @@ sentencia: ENTERO ID PUNTO {asignarValorA($2, 0);};
 ;
 
 
-expresion: primaria {$$ = $1; };
-        | expresion SUMA primaria { $$ = $1 + $3; };
-        | expresion RESTA primaria { $$ = $1 - $3; };
+expresion: primaria {$$ = $1; }
+        | expresion SUMA primaria { $$ = $1 + $3; }
+        | expresion RESTA primaria { $$ = $1 - $3; }
 ; 
 
-primaria: ID { $$ = (buscar(lista, $1)->info.valor); };
-        |NUMERO { $$ = $1 ; };
-        |PARENTESISIZQUIERDO expresion PARENTESISDERECHO { $$ = $2; };
+primaria: ID { $$ = (buscar(lista, $1)->info.valor); }
+        |NUMERO { $$ = $1 ; }
+        |PARENTESISIZQUIERDO expresion PARENTESISDERECHO { $$ = $2; }
 ;
 
 %%
@@ -123,7 +123,7 @@ int calcularEdad(int fechaActual, int fechaNacimiento) {
     int edad_d = dia_a - dia_n;
     int aux;
     
-    if(edad_m < 0) {
+    if(edad_m <= 0) {
         edad_a--;
         aux = 12 - edad_m;
         edad_m = aux;

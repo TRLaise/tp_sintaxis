@@ -12,10 +12,10 @@ void errorLexico();
 DIGITO [0-9]
 LETRA ([a-z])
 GUION "_"
-IDENTIFICADOR {LETRA}(LETRA|GUION)*
-NUMERO {DIGITO}+
-BLANCO [ \t]
-NUEVALINEA \n
+IDENTIFICADOR {LETRA}.(LETRA|GUION)*
+NUMERO {DIGITO}({DIGITO})*
+BLANCO [ "\t"]
+NUEVALINEA "\n"
 
 %%
 
@@ -23,12 +23,12 @@ NUEVALINEA \n
 "calcularEdad"   { yylval.reservada = strdup(yytext); return CALCULAREDAD; }
 "mostrarEdad"    { yylval.reservada = strdup(yytext); return MOSTRAREDAD; }
 
-"int"            { return ENTERO; }
+"int"         { printf("Token tipo: ENTERO %s \n ", yytext); return ENTERO; }
 "inicio"         { return INICIO; }
 "fin"            { return FIN; }
-"es"             { yylval.reservada = strdup(yytext); return ASIGNACION; }
-
-{IDENTIFICADOR}   { yylval.reservada = strdup(yytext); return ID; }
+"es"             { printf("Token tipo: ASIGNACION %s \n ", yytext); yylval.reservada = strdup(yytext); return ASIGNACION; }
+" "				 ;
+{IDENTIFICADOR}* { printf("Token tipo: IDENTIFICADOR %s \n ", yytext); yylval.reservada = strdup(yytext); return ID; }
 {NUMERO}         { yylval.number = atoi(yytext); return NUMERO; }
 
 "."              { return PUNTO; }

@@ -7,49 +7,53 @@ Gramática
 
     0 $accept: prog $end
 
-    1 prog: INICIO sentencias FIN
+    1 $@1: /* vacío */
 
-    2 sentencias: sentencias sentencia
-    3           | sentencia
+    2 $@2: /* vacío */
 
-    4 sentencia: ENTERO ID PUNTO
-    5          | ENTERO ID ASIGNACION NUMERO PUNTO
-    6          | ID ASIGNACION expresion PUNTO
-    7          | ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
-    8          | ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
-    9          | ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID COMA ID PARENTESISDERECHO PUNTO
-   10          | ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO ID COMA ID PARENTESISDERECHO PUNTO
-   11          | MOSTRAREDAD PARENTESISIZQUIERDO ID PARENTESISDERECHO PUNTO
+    3 prog: INICIO $@1 sentencias $@2 FIN
 
-   12 expresion: primaria
-   13          | expresion SUMA primaria
-   14          | expresion RESTA primaria
+    4 sentencias: sentencias sentencia
+    5           | sentencia
 
-   15 primaria: ID
-   16         | NUMERO
-   17         | PARENTESISIZQUIERDO expresion PARENTESISDERECHO
+    6 sentencia: ENTERO ID PUNTO
+    7          | ENTERO ID ASIGNACION NUMERO PUNTO
+    8          | ID ASIGNACION expresion PUNTO
+    9          | ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
+   10          | ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
+   11          | ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID COMA ID PARENTESISDERECHO PUNTO
+   12          | ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO ID COMA ID PARENTESISDERECHO PUNTO
+   13          | MOSTRAREDAD PARENTESISIZQUIERDO ID PARENTESISDERECHO PUNTO
+
+   14 expresion: primaria
+   15          | expresion SUMA primaria
+   16          | expresion RESTA primaria
+
+   17 primaria: ID
+   18         | NUMERO
+   19         | PARENTESISIZQUIERDO expresion PARENTESISDERECHO
 
 
 Terminales con las reglas donde aparecen
 
 $end (0) 0
 error (256)
-ASIGNACION (258) 5 6 7 8 9 10
-PUNTO (259) 4 5 6 7 8 9 10 11
-SUMA (260) 13
-RESTA (261) 14
-PARENTESISIZQUIERDO (262) 7 8 9 10 11 17
-PARENTESISDERECHO (263) 7 8 9 10 11 17
-COMA (264) 7 8 9 10
+ASIGNACION (258) 7 8 9 10 11 12
+PUNTO (259) 6 7 8 9 10 11 12 13
+SUMA (260) 15
+RESTA (261) 16
+PARENTESISIZQUIERDO (262) 9 10 11 12 13 19
+PARENTESISDERECHO (263) 9 10 11 12 13 19
+COMA (264) 9 10 11 12
 OTHER (265)
-ID (266) 4 5 6 7 8 9 10 11 15
-NUMERO (267) 5 7 8 16
-CALCULARFECHA (268) 7 9
-CALCULAREDAD (269) 8 10
-MOSTRAREDAD (270) 11
-INICIO (271) 1
-FIN (272) 1
-ENTERO (273) 4 5
+ID (266) 6 7 8 9 10 11 12 13 17
+NUMERO (267) 7 9 10 18
+CALCULARFECHA (268) 9 11
+CALCULAREDAD (269) 10 12
+MOSTRAREDAD (270) 13
+INICIO (271) 3
+FIN (272) 3
+ENTERO (273) 6 7
 
 
 No terminales con las reglas donde aparecen
@@ -57,15 +61,19 @@ No terminales con las reglas donde aparecen
 $accept (19)
     en la izquierda: 0
 prog (20)
-    en la izquierda: 1, en la derecha: 0
-sentencias (21)
-    en la izquierda: 2 3, en la derecha: 1 2
-sentencia (22)
-    en la izquierda: 4 5 6 7 8 9 10 11, en la derecha: 2 3
-expresion (23)
-    en la izquierda: 12 13 14, en la derecha: 6 13 14 17
-primaria (24)
-    en la izquierda: 15 16 17, en la derecha: 12 13 14
+    en la izquierda: 3, en la derecha: 0
+$@1 (21)
+    en la izquierda: 1, en la derecha: 3
+$@2 (22)
+    en la izquierda: 2, en la derecha: 3
+sentencias (23)
+    en la izquierda: 4 5, en la derecha: 3 4
+sentencia (24)
+    en la izquierda: 6 7 8 9 10 11 12 13, en la derecha: 4 5
+expresion (25)
+    en la izquierda: 14 15 16, en la derecha: 8 15 16 19
+primaria (26)
+    en la izquierda: 17 18 19, en la derecha: 14 15 16
 
 
 estado 0
@@ -79,475 +87,493 @@ estado 0
 
 estado 1
 
-    1 prog: INICIO . sentencias FIN
+    3 prog: INICIO . $@1 sentencias $@2 FIN
 
-    ID           desplazar e ir al estado 3
-    MOSTRAREDAD  desplazar e ir al estado 4
-    ENTERO       desplazar e ir al estado 5
+    $default  reduce usando la regla 1 ($@1)
 
-    sentencias  ir al estado 6
-    sentencia   ir al estado 7
+    $@1  ir al estado 3
 
 
 estado 2
 
     0 $accept: prog . $end
 
-    $end  desplazar e ir al estado 8
+    $end  desplazar e ir al estado 4
 
 
 estado 3
 
-    6 sentencia: ID . ASIGNACION expresion PUNTO
-    7          | ID . ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
-    8          | ID . ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
-    9          | ID . ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID COMA ID PARENTESISDERECHO PUNTO
-   10          | ID . ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO ID COMA ID PARENTESISDERECHO PUNTO
+    3 prog: INICIO $@1 . sentencias $@2 FIN
 
-    ASIGNACION  desplazar e ir al estado 9
+    ID           desplazar e ir al estado 5
+    MOSTRAREDAD  desplazar e ir al estado 6
+    ENTERO       desplazar e ir al estado 7
+
+    sentencias  ir al estado 8
+    sentencia   ir al estado 9
 
 
 estado 4
-
-   11 sentencia: MOSTRAREDAD . PARENTESISIZQUIERDO ID PARENTESISDERECHO PUNTO
-
-    PARENTESISIZQUIERDO  desplazar e ir al estado 10
-
-
-estado 5
-
-    4 sentencia: ENTERO . ID PUNTO
-    5          | ENTERO . ID ASIGNACION NUMERO PUNTO
-
-    ID  desplazar e ir al estado 11
-
-
-estado 6
-
-    1 prog: INICIO sentencias . FIN
-    2 sentencias: sentencias . sentencia
-
-    ID           desplazar e ir al estado 3
-    MOSTRAREDAD  desplazar e ir al estado 4
-    FIN          desplazar e ir al estado 12
-    ENTERO       desplazar e ir al estado 5
-
-    sentencia  ir al estado 13
-
-
-estado 7
-
-    3 sentencias: sentencia .
-
-    $default  reduce usando la regla 3 (sentencias)
-
-
-estado 8
 
     0 $accept: prog $end .
 
     $default  aceptar
 
 
+estado 5
+
+    8 sentencia: ID . ASIGNACION expresion PUNTO
+    9          | ID . ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
+   10          | ID . ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
+   11          | ID . ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID COMA ID PARENTESISDERECHO PUNTO
+   12          | ID . ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO ID COMA ID PARENTESISDERECHO PUNTO
+
+    ASIGNACION  desplazar e ir al estado 10
+
+
+estado 6
+
+   13 sentencia: MOSTRAREDAD . PARENTESISIZQUIERDO ID PARENTESISDERECHO PUNTO
+
+    PARENTESISIZQUIERDO  desplazar e ir al estado 11
+
+
+estado 7
+
+    6 sentencia: ENTERO . ID PUNTO
+    7          | ENTERO . ID ASIGNACION NUMERO PUNTO
+
+    ID  desplazar e ir al estado 12
+
+
+estado 8
+
+    3 prog: INICIO $@1 sentencias . $@2 FIN
+    4 sentencias: sentencias . sentencia
+
+    ID           desplazar e ir al estado 5
+    MOSTRAREDAD  desplazar e ir al estado 6
+    ENTERO       desplazar e ir al estado 7
+
+    $default  reduce usando la regla 2 ($@2)
+
+    $@2        ir al estado 13
+    sentencia  ir al estado 14
+
+
 estado 9
 
-    6 sentencia: ID ASIGNACION . expresion PUNTO
-    7          | ID ASIGNACION . CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
-    8          | ID ASIGNACION . CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
-    9          | ID ASIGNACION . CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID COMA ID PARENTESISDERECHO PUNTO
-   10          | ID ASIGNACION . CALCULAREDAD PARENTESISIZQUIERDO ID COMA ID PARENTESISDERECHO PUNTO
+    5 sentencias: sentencia .
 
-    PARENTESISIZQUIERDO  desplazar e ir al estado 14
-    ID                   desplazar e ir al estado 15
-    NUMERO               desplazar e ir al estado 16
-    CALCULARFECHA        desplazar e ir al estado 17
-    CALCULAREDAD         desplazar e ir al estado 18
-
-    expresion  ir al estado 19
-    primaria   ir al estado 20
+    $default  reduce usando la regla 5 (sentencias)
 
 
 estado 10
 
-   11 sentencia: MOSTRAREDAD PARENTESISIZQUIERDO . ID PARENTESISDERECHO PUNTO
+    8 sentencia: ID ASIGNACION . expresion PUNTO
+    9          | ID ASIGNACION . CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
+   10          | ID ASIGNACION . CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
+   11          | ID ASIGNACION . CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID COMA ID PARENTESISDERECHO PUNTO
+   12          | ID ASIGNACION . CALCULAREDAD PARENTESISIZQUIERDO ID COMA ID PARENTESISDERECHO PUNTO
 
-    ID  desplazar e ir al estado 21
+    PARENTESISIZQUIERDO  desplazar e ir al estado 15
+    ID                   desplazar e ir al estado 16
+    NUMERO               desplazar e ir al estado 17
+    CALCULARFECHA        desplazar e ir al estado 18
+    CALCULAREDAD         desplazar e ir al estado 19
+
+    expresion  ir al estado 20
+    primaria   ir al estado 21
 
 
 estado 11
 
-    4 sentencia: ENTERO ID . PUNTO
-    5          | ENTERO ID . ASIGNACION NUMERO PUNTO
+   13 sentencia: MOSTRAREDAD PARENTESISIZQUIERDO . ID PARENTESISDERECHO PUNTO
 
-    ASIGNACION  desplazar e ir al estado 22
-    PUNTO       desplazar e ir al estado 23
+    ID  desplazar e ir al estado 22
 
 
 estado 12
 
-    1 prog: INICIO sentencias FIN .
+    6 sentencia: ENTERO ID . PUNTO
+    7          | ENTERO ID . ASIGNACION NUMERO PUNTO
 
-    $default  reduce usando la regla 1 (prog)
+    ASIGNACION  desplazar e ir al estado 23
+    PUNTO       desplazar e ir al estado 24
 
 
 estado 13
 
-    2 sentencias: sentencias sentencia .
+    3 prog: INICIO $@1 sentencias $@2 . FIN
 
-    $default  reduce usando la regla 2 (sentencias)
+    FIN  desplazar e ir al estado 25
 
 
 estado 14
 
-   17 primaria: PARENTESISIZQUIERDO . expresion PARENTESISDERECHO
+    4 sentencias: sentencias sentencia .
 
-    PARENTESISIZQUIERDO  desplazar e ir al estado 14
-    ID                   desplazar e ir al estado 15
-    NUMERO               desplazar e ir al estado 16
-
-    expresion  ir al estado 24
-    primaria   ir al estado 20
+    $default  reduce usando la regla 4 (sentencias)
 
 
 estado 15
 
-   15 primaria: ID .
+   19 primaria: PARENTESISIZQUIERDO . expresion PARENTESISDERECHO
 
-    $default  reduce usando la regla 15 (primaria)
+    PARENTESISIZQUIERDO  desplazar e ir al estado 15
+    ID                   desplazar e ir al estado 16
+    NUMERO               desplazar e ir al estado 17
+
+    expresion  ir al estado 26
+    primaria   ir al estado 21
 
 
 estado 16
 
-   16 primaria: NUMERO .
+   17 primaria: ID .
 
-    $default  reduce usando la regla 16 (primaria)
+    $default  reduce usando la regla 17 (primaria)
 
 
 estado 17
 
-    7 sentencia: ID ASIGNACION CALCULARFECHA . PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
-    9          | ID ASIGNACION CALCULARFECHA . PARENTESISIZQUIERDO ID COMA ID COMA ID PARENTESISDERECHO PUNTO
+   18 primaria: NUMERO .
 
-    PARENTESISIZQUIERDO  desplazar e ir al estado 25
+    $default  reduce usando la regla 18 (primaria)
 
 
 estado 18
 
-    8 sentencia: ID ASIGNACION CALCULAREDAD . PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
-   10          | ID ASIGNACION CALCULAREDAD . PARENTESISIZQUIERDO ID COMA ID PARENTESISDERECHO PUNTO
+    9 sentencia: ID ASIGNACION CALCULARFECHA . PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
+   11          | ID ASIGNACION CALCULARFECHA . PARENTESISIZQUIERDO ID COMA ID COMA ID PARENTESISDERECHO PUNTO
 
-    PARENTESISIZQUIERDO  desplazar e ir al estado 26
+    PARENTESISIZQUIERDO  desplazar e ir al estado 27
 
 
 estado 19
 
-    6 sentencia: ID ASIGNACION expresion . PUNTO
-   13 expresion: expresion . SUMA primaria
-   14          | expresion . RESTA primaria
+   10 sentencia: ID ASIGNACION CALCULAREDAD . PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
+   12          | ID ASIGNACION CALCULAREDAD . PARENTESISIZQUIERDO ID COMA ID PARENTESISDERECHO PUNTO
 
-    PUNTO  desplazar e ir al estado 27
-    SUMA   desplazar e ir al estado 28
-    RESTA  desplazar e ir al estado 29
+    PARENTESISIZQUIERDO  desplazar e ir al estado 28
 
 
 estado 20
 
-   12 expresion: primaria .
+    8 sentencia: ID ASIGNACION expresion . PUNTO
+   15 expresion: expresion . SUMA primaria
+   16          | expresion . RESTA primaria
 
-    $default  reduce usando la regla 12 (expresion)
+    PUNTO  desplazar e ir al estado 29
+    SUMA   desplazar e ir al estado 30
+    RESTA  desplazar e ir al estado 31
 
 
 estado 21
 
-   11 sentencia: MOSTRAREDAD PARENTESISIZQUIERDO ID . PARENTESISDERECHO PUNTO
+   14 expresion: primaria .
 
-    PARENTESISDERECHO  desplazar e ir al estado 30
+    $default  reduce usando la regla 14 (expresion)
 
 
 estado 22
 
-    5 sentencia: ENTERO ID ASIGNACION . NUMERO PUNTO
+   13 sentencia: MOSTRAREDAD PARENTESISIZQUIERDO ID . PARENTESISDERECHO PUNTO
 
-    NUMERO  desplazar e ir al estado 31
+    PARENTESISDERECHO  desplazar e ir al estado 32
 
 
 estado 23
 
-    4 sentencia: ENTERO ID PUNTO .
+    7 sentencia: ENTERO ID ASIGNACION . NUMERO PUNTO
 
-    $default  reduce usando la regla 4 (sentencia)
+    NUMERO  desplazar e ir al estado 33
 
 
 estado 24
 
-   13 expresion: expresion . SUMA primaria
-   14          | expresion . RESTA primaria
-   17 primaria: PARENTESISIZQUIERDO expresion . PARENTESISDERECHO
+    6 sentencia: ENTERO ID PUNTO .
 
-    SUMA               desplazar e ir al estado 28
-    RESTA              desplazar e ir al estado 29
-    PARENTESISDERECHO  desplazar e ir al estado 32
+    $default  reduce usando la regla 6 (sentencia)
 
 
 estado 25
 
-    7 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO . NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
-    9          | ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO . ID COMA ID COMA ID PARENTESISDERECHO PUNTO
+    3 prog: INICIO $@1 sentencias $@2 FIN .
 
-    ID      desplazar e ir al estado 33
-    NUMERO  desplazar e ir al estado 34
+    $default  reduce usando la regla 3 (prog)
 
 
 estado 26
 
-    8 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO . NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
-   10          | ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO . ID COMA ID PARENTESISDERECHO PUNTO
+   15 expresion: expresion . SUMA primaria
+   16          | expresion . RESTA primaria
+   19 primaria: PARENTESISIZQUIERDO expresion . PARENTESISDERECHO
+
+    SUMA               desplazar e ir al estado 30
+    RESTA              desplazar e ir al estado 31
+    PARENTESISDERECHO  desplazar e ir al estado 34
+
+
+estado 27
+
+    9 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO . NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
+   11          | ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO . ID COMA ID COMA ID PARENTESISDERECHO PUNTO
 
     ID      desplazar e ir al estado 35
     NUMERO  desplazar e ir al estado 36
 
 
-estado 27
-
-    6 sentencia: ID ASIGNACION expresion PUNTO .
-
-    $default  reduce usando la regla 6 (sentencia)
-
-
 estado 28
 
-   13 expresion: expresion SUMA . primaria
+   10 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO . NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
+   12          | ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO . ID COMA ID PARENTESISDERECHO PUNTO
 
-    PARENTESISIZQUIERDO  desplazar e ir al estado 14
-    ID                   desplazar e ir al estado 15
-    NUMERO               desplazar e ir al estado 16
-
-    primaria  ir al estado 37
+    ID      desplazar e ir al estado 37
+    NUMERO  desplazar e ir al estado 38
 
 
 estado 29
 
-   14 expresion: expresion RESTA . primaria
+    8 sentencia: ID ASIGNACION expresion PUNTO .
 
-    PARENTESISIZQUIERDO  desplazar e ir al estado 14
-    ID                   desplazar e ir al estado 15
-    NUMERO               desplazar e ir al estado 16
-
-    primaria  ir al estado 38
+    $default  reduce usando la regla 8 (sentencia)
 
 
 estado 30
 
-   11 sentencia: MOSTRAREDAD PARENTESISIZQUIERDO ID PARENTESISDERECHO . PUNTO
+   15 expresion: expresion SUMA . primaria
 
-    PUNTO  desplazar e ir al estado 39
+    PARENTESISIZQUIERDO  desplazar e ir al estado 15
+    ID                   desplazar e ir al estado 16
+    NUMERO               desplazar e ir al estado 17
+
+    primaria  ir al estado 39
 
 
 estado 31
 
-    5 sentencia: ENTERO ID ASIGNACION NUMERO . PUNTO
+   16 expresion: expresion RESTA . primaria
 
-    PUNTO  desplazar e ir al estado 40
+    PARENTESISIZQUIERDO  desplazar e ir al estado 15
+    ID                   desplazar e ir al estado 16
+    NUMERO               desplazar e ir al estado 17
+
+    primaria  ir al estado 40
 
 
 estado 32
 
-   17 primaria: PARENTESISIZQUIERDO expresion PARENTESISDERECHO .
+   13 sentencia: MOSTRAREDAD PARENTESISIZQUIERDO ID PARENTESISDERECHO . PUNTO
 
-    $default  reduce usando la regla 17 (primaria)
+    PUNTO  desplazar e ir al estado 41
 
 
 estado 33
 
-    9 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID . COMA ID COMA ID PARENTESISDERECHO PUNTO
+    7 sentencia: ENTERO ID ASIGNACION NUMERO . PUNTO
 
-    COMA  desplazar e ir al estado 41
+    PUNTO  desplazar e ir al estado 42
 
 
 estado 34
 
-    7 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO . COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
+   19 primaria: PARENTESISIZQUIERDO expresion PARENTESISDERECHO .
 
-    COMA  desplazar e ir al estado 42
+    $default  reduce usando la regla 19 (primaria)
 
 
 estado 35
 
-   10 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO ID . COMA ID PARENTESISDERECHO PUNTO
+   11 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID . COMA ID COMA ID PARENTESISDERECHO PUNTO
 
     COMA  desplazar e ir al estado 43
 
 
 estado 36
 
-    8 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO . COMA NUMERO PARENTESISDERECHO PUNTO
+    9 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO . COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
 
     COMA  desplazar e ir al estado 44
 
 
 estado 37
 
-   13 expresion: expresion SUMA primaria .
+   12 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO ID . COMA ID PARENTESISDERECHO PUNTO
 
-    $default  reduce usando la regla 13 (expresion)
+    COMA  desplazar e ir al estado 45
 
 
 estado 38
 
-   14 expresion: expresion RESTA primaria .
+   10 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO . COMA NUMERO PARENTESISDERECHO PUNTO
 
-    $default  reduce usando la regla 14 (expresion)
+    COMA  desplazar e ir al estado 46
 
 
 estado 39
 
-   11 sentencia: MOSTRAREDAD PARENTESISIZQUIERDO ID PARENTESISDERECHO PUNTO .
+   15 expresion: expresion SUMA primaria .
 
-    $default  reduce usando la regla 11 (sentencia)
+    $default  reduce usando la regla 15 (expresion)
 
 
 estado 40
 
-    5 sentencia: ENTERO ID ASIGNACION NUMERO PUNTO .
+   16 expresion: expresion RESTA primaria .
 
-    $default  reduce usando la regla 5 (sentencia)
+    $default  reduce usando la regla 16 (expresion)
 
 
 estado 41
 
-    9 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA . ID COMA ID PARENTESISDERECHO PUNTO
+   13 sentencia: MOSTRAREDAD PARENTESISIZQUIERDO ID PARENTESISDERECHO PUNTO .
 
-    ID  desplazar e ir al estado 45
+    $default  reduce usando la regla 13 (sentencia)
 
 
 estado 42
 
-    7 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA . NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
+    7 sentencia: ENTERO ID ASIGNACION NUMERO PUNTO .
 
-    NUMERO  desplazar e ir al estado 46
+    $default  reduce usando la regla 7 (sentencia)
 
 
 estado 43
 
-   10 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO ID COMA . ID PARENTESISDERECHO PUNTO
+   11 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA . ID COMA ID PARENTESISDERECHO PUNTO
 
     ID  desplazar e ir al estado 47
 
 
 estado 44
 
-    8 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA . NUMERO PARENTESISDERECHO PUNTO
+    9 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA . NUMERO COMA NUMERO PARENTESISDERECHO PUNTO
 
     NUMERO  desplazar e ir al estado 48
 
 
 estado 45
 
-    9 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID . COMA ID PARENTESISDERECHO PUNTO
+   12 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO ID COMA . ID PARENTESISDERECHO PUNTO
 
-    COMA  desplazar e ir al estado 49
+    ID  desplazar e ir al estado 49
 
 
 estado 46
 
-    7 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO . COMA NUMERO PARENTESISDERECHO PUNTO
+   10 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA . NUMERO PARENTESISDERECHO PUNTO
 
-    COMA  desplazar e ir al estado 50
+    NUMERO  desplazar e ir al estado 50
 
 
 estado 47
 
-   10 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO ID COMA ID . PARENTESISDERECHO PUNTO
+   11 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID . COMA ID PARENTESISDERECHO PUNTO
 
-    PARENTESISDERECHO  desplazar e ir al estado 51
+    COMA  desplazar e ir al estado 51
 
 
 estado 48
 
-    8 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA NUMERO . PARENTESISDERECHO PUNTO
+    9 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO . COMA NUMERO PARENTESISDERECHO PUNTO
 
-    PARENTESISDERECHO  desplazar e ir al estado 52
+    COMA  desplazar e ir al estado 52
 
 
 estado 49
 
-    9 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID COMA . ID PARENTESISDERECHO PUNTO
+   12 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO ID COMA ID . PARENTESISDERECHO PUNTO
 
-    ID  desplazar e ir al estado 53
+    PARENTESISDERECHO  desplazar e ir al estado 53
 
 
 estado 50
 
-    7 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA . NUMERO PARENTESISDERECHO PUNTO
+   10 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA NUMERO . PARENTESISDERECHO PUNTO
 
-    NUMERO  desplazar e ir al estado 54
+    PARENTESISDERECHO  desplazar e ir al estado 54
 
 
 estado 51
 
-   10 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO ID COMA ID PARENTESISDERECHO . PUNTO
+   11 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID COMA . ID PARENTESISDERECHO PUNTO
 
-    PUNTO  desplazar e ir al estado 55
+    ID  desplazar e ir al estado 55
 
 
 estado 52
 
-    8 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO . PUNTO
+    9 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA . NUMERO PARENTESISDERECHO PUNTO
 
-    PUNTO  desplazar e ir al estado 56
+    NUMERO  desplazar e ir al estado 56
 
 
 estado 53
 
-    9 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID COMA ID . PARENTESISDERECHO PUNTO
+   12 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO ID COMA ID PARENTESISDERECHO . PUNTO
 
-    PARENTESISDERECHO  desplazar e ir al estado 57
+    PUNTO  desplazar e ir al estado 57
 
 
 estado 54
 
-    7 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO . PARENTESISDERECHO PUNTO
+   10 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO . PUNTO
 
-    PARENTESISDERECHO  desplazar e ir al estado 58
+    PUNTO  desplazar e ir al estado 58
 
 
 estado 55
 
-   10 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO ID COMA ID PARENTESISDERECHO PUNTO .
+   11 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID COMA ID . PARENTESISDERECHO PUNTO
 
-    $default  reduce usando la regla 10 (sentencia)
+    PARENTESISDERECHO  desplazar e ir al estado 59
 
 
 estado 56
 
-    8 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO .
+    9 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO . PARENTESISDERECHO PUNTO
 
-    $default  reduce usando la regla 8 (sentencia)
+    PARENTESISDERECHO  desplazar e ir al estado 60
 
 
 estado 57
 
-    9 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID COMA ID PARENTESISDERECHO . PUNTO
+   12 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO ID COMA ID PARENTESISDERECHO PUNTO .
 
-    PUNTO  desplazar e ir al estado 59
+    $default  reduce usando la regla 12 (sentencia)
 
 
 estado 58
 
-    7 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO . PUNTO
+   10 sentencia: ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO .
 
-    PUNTO  desplazar e ir al estado 60
+    $default  reduce usando la regla 10 (sentencia)
 
 
 estado 59
 
-    9 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID COMA ID PARENTESISDERECHO PUNTO .
+   11 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID COMA ID PARENTESISDERECHO . PUNTO
 
-    $default  reduce usando la regla 9 (sentencia)
+    PUNTO  desplazar e ir al estado 61
 
 
 estado 60
 
-    7 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO .
+    9 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO . PUNTO
 
-    $default  reduce usando la regla 7 (sentencia)
+    PUNTO  desplazar e ir al estado 62
+
+
+estado 61
+
+   11 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID COMA ID PARENTESISDERECHO PUNTO .
+
+    $default  reduce usando la regla 11 (sentencia)
+
+
+estado 62
+
+    9 sentencia: ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO .
+
+    $default  reduce usando la regla 9 (sentencia)
