@@ -1,3 +1,4 @@
 inicio
 int var.
+var es 48.
 fin

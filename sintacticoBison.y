@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h> 
+#include <string.h>
 
 extern int yylineno;
 
@@ -28,6 +29,8 @@ void cambiarValorA(char* unIdentificador, int unValor);
 void insertar(struct Nodo*lista, struct Variable var);
 void reemplazarEn(struct Nodo*lista, char* unIdentificador, int unValor);
 struct Nodo*buscar(struct Nodo*lista, char* unIdentificador);
+void liberarMemoria(struct Nodo* lista);
+
 
 struct Nodo* lista = NULL;
 
@@ -43,25 +46,25 @@ struct Nodo* lista = NULL;
    char* reservada;
 } 
 
-%type <cadena> ID
-%type <number> NUMERO EXPRESION PRIMARIA
-%type <reservada> MOSTRAREDAD CALCULARFECHA CALCULAREDAD INICIO FIN ENTERO
+%type <cadena> ID sentencia sentencias
+%type <number> NUMERO expresion primaria 
+%type <reservada> MOSTRAREDAD CALCULARFECHA CALCULAREDAD INICIO FIN ENTERO ASIGNACION
 
 %start prog
 
 %%
 
 prog: 
-    INICIO SENTENCIAS FIN;
+    INICIO sentencias FIN
 ;
 
-SENTENCIAS: SENTENCIAS SENTENCIA;
-        | SENTENCIA;
+sentencias: sentencias sentencia
+        | sentencia
 ;
 
-SENTENCIA: ENTERO ID PUNTO {asignarValorA($2, 0);};
+sentencia: ENTERO ID PUNTO {asignarValorA($2, 0);};
         | ENTERO ID ASIGNACION NUMERO PUNTO { asignarValorA($2, $4); };
-        | ID ASIGNACION EXPRESION PUNTO { cambiarValorA($1, $3); };
+        | ID ASIGNACION expresion PUNTO { cambiarValorA($1, $3); };
         | ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO { asignarValorA($1, calcularFecha($5, $7, $9)); }; // SI ME DAN 3 NUMEROS
         | ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO { asignarValorA($1, calcularEdad($5, $7)); }; // SI ME DAN 2 NUMEROS
         | ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID COMA ID PARENTESISDERECHO PUNTO { asignarValorA($1, calcularFecha(buscar(lista, $5)->info.valor, buscar(lista, $7)->info.valor, buscar(lista, $9)->info.valor)); }; // SI ME DAN 3 IDENTIFICADORES
@@ -70,14 +73,14 @@ SENTENCIA: ENTERO ID PUNTO {asignarValorA($2, 0);};
 ;
 
 
-EXPRESION: PRIMARIA {$$ = $1; };
-        | EXPRESION SUMA PRIMARIA { $$ = $1 + $3; };
-        | EXPRESION RESTA PRIMARIA { $$ = $1 - $3; };
+expresion: primaria {$$ = $1; };
+        | expresion SUMA primaria { $$ = $1 + $3; };
+        | expresion RESTA primaria { $$ = $1 - $3; };
 ; 
 
-PRIMARIA: ID { $$ = (buscar(lista, $1)->info.valor); };
+primaria: ID { $$ = (buscar(lista, $1)->info.valor); };
         |NUMERO { $$ = $1 ; };
-        |PARENTESISIZQUIERDO EXPRESION PARENTESISDERECHO { $$ = $2; };
+        |PARENTESISIZQUIERDO expresion PARENTESISDERECHO { $$ = $2; };
 ;
 
 %%
@@ -93,7 +96,18 @@ int yyerror(char *s)
 int main(int argc, char **argv)
 {
     yyparse();
+    liberarMemoria(lista);
     return 0;
+}
+
+void liberarMemoria(struct Nodo* lista) {
+    struct Nodo* p = lista;
+    while (p != NULL) {
+        free(p->info.nombre);
+        struct Nodo* temp = p;
+        p = p->sig;
+        free(temp);
+    }
 }
 
 int calcularEdad(int fechaActual, int fechaNacimiento) {
@@ -137,14 +151,14 @@ int calcularFecha(int anio, int mes, int dia){
 
 void asignarValorA(char* unIdentificador, int unValor) {
     struct Variable aux;
-    aux.nombre = unIdentificador;
+    aux.nombre = strdup(unIdentificador);
     aux.valor = unValor;
     insertar(lista, aux);
 }
 
 void cambiarValorA(char* unIdentificador, int unValor) {
     struct Variable aux;
-    aux.nombre = unIdentificador;
+    aux.nombre = strdup(unIdentificador);
     aux.valor = unValor;
     reemplazarEn(lista, unIdentificador, unValor);
 }
@@ -170,10 +184,13 @@ void insertar(struct Nodo*lista,struct Variable var)
 void reemplazarEn(struct Nodo*lista,char* unIdentificador, int unValor)
 {
     struct Nodo*objetivo=buscar(lista, unIdentificador);
-    if(objetivo == NULL)
-        printf("Esta intentando asignar %d a un identificador : %s que no existe", unValor, unIdentificador);
+    if(objetivo == NULL){
+    printf("Esta intentando asignar %d a un identificador : %s que no existe", unValor, unIdentificador);
+        exit(0);
+    }  
     else
         objetivo->info.valor = unValor;
+        
 }
 
 struct Nodo*buscar(struct Nodo*lista, char* unIdentificador)

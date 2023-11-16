@@ -73,6 +73,7 @@
 
 #include <stdio.h>
 #include <stdlib.h> 
+#include <string.h>
 
 extern int yylineno;
 
@@ -98,13 +99,15 @@ void cambiarValorA(char* unIdentificador, int unValor);
 void insertar(struct Nodo*lista, struct Variable var);
 void reemplazarEn(struct Nodo*lista, char* unIdentificador, int unValor);
 struct Nodo*buscar(struct Nodo*lista, char* unIdentificador);
+void liberarMemoria(struct Nodo* lista);
+
 
 struct Nodo* lista = NULL;
 
 
 
 /* Line 189 of yacc.c  */
-#line 108 "sintacticoBison.tab.c"
+#line 111 "sintacticoBison.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -157,7 +160,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 40 "sintacticoBison.y"
+#line 43 "sintacticoBison.y"
 
    char cadena[30];
    int number;
@@ -166,7 +169,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 170 "sintacticoBison.tab.c"
+#line 173 "sintacticoBison.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -178,7 +181,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 182 "sintacticoBison.tab.c"
+#line 185 "sintacticoBison.tab.c"
 
 #ifdef short
 # undef short
@@ -471,8 +474,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    55,    55,    58,    59,    62,    63,    64,    65,    66,
-      67,    68,    69,    73,    74,    75,    78,    79,    80
+       0,    58,    58,    61,    62,    65,    66,    67,    68,    69,
+      70,    71,    72,    76,    77,    78,    81,    82,    83
 };
 #endif
 
@@ -484,8 +487,8 @@ static const char *const yytname[] =
   "$end", "error", "$undefined", "ASIGNACION", "PUNTO", "SUMA", "RESTA",
   "PARENTESISIZQUIERDO", "PARENTESISDERECHO", "COMA", "OTHER", "ID",
   "NUMERO", "CALCULARFECHA", "CALCULAREDAD", "MOSTRAREDAD", "INICIO",
-  "FIN", "ENTERO", "$accept", "prog", "SENTENCIAS", "SENTENCIA",
-  "EXPRESION", "PRIMARIA", 0
+  "FIN", "ENTERO", "$accept", "prog", "sentencias", "sentencia",
+  "expresion", "primaria", 0
 };
 #endif
 
@@ -1404,105 +1407,105 @@ yyreduce:
         case 5:
 
 /* Line 1455 of yacc.c  */
-#line 62 "sintacticoBison.y"
-    {;}
+#line 65 "sintacticoBison.y"
+    {asignarValorA((yyvsp[(2) - (3)].cadena), 0);;}
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 63 "sintacticoBison.y"
+#line 66 "sintacticoBison.y"
     { asignarValorA((yyvsp[(2) - (5)].cadena), (yyvsp[(4) - (5)].number)); ;}
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 64 "sintacticoBison.y"
+#line 67 "sintacticoBison.y"
     { cambiarValorA((yyvsp[(1) - (4)].cadena), (yyvsp[(3) - (4)].number)); ;}
     break;
 
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 65 "sintacticoBison.y"
+#line 68 "sintacticoBison.y"
     { asignarValorA((yyvsp[(1) - (11)].cadena), calcularFecha((yyvsp[(5) - (11)].number), (yyvsp[(7) - (11)].number), (yyvsp[(9) - (11)].number))); ;}
     break;
 
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 66 "sintacticoBison.y"
+#line 69 "sintacticoBison.y"
     { asignarValorA((yyvsp[(1) - (9)].cadena), calcularEdad((yyvsp[(5) - (9)].number), (yyvsp[(7) - (9)].number))); ;}
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 67 "sintacticoBison.y"
+#line 70 "sintacticoBison.y"
     { asignarValorA((yyvsp[(1) - (11)].cadena), calcularFecha(buscar(lista, (yyvsp[(5) - (11)].cadena))->info.valor, buscar(lista, (yyvsp[(7) - (11)].cadena))->info.valor, buscar(lista, (yyvsp[(9) - (11)].cadena))->info.valor)); ;}
     break;
 
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 68 "sintacticoBison.y"
+#line 71 "sintacticoBison.y"
     { asignarValorA((yyvsp[(1) - (9)].cadena), calcularEdad(buscar(lista, (yyvsp[(5) - (9)].cadena))->info.valor, buscar(lista, (yyvsp[(7) - (9)].cadena))->info.valor)); ;}
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 69 "sintacticoBison.y"
+#line 72 "sintacticoBison.y"
     { mostrarEdad(buscar(lista, (yyvsp[(3) - (5)].cadena))->info.valor) ;}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 73 "sintacticoBison.y"
+#line 76 "sintacticoBison.y"
     {(yyval.number) = (yyvsp[(1) - (1)].number); ;}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 74 "sintacticoBison.y"
+#line 77 "sintacticoBison.y"
     { (yyval.number) = (yyvsp[(1) - (3)].number) + (yyvsp[(3) - (3)].number); ;}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 75 "sintacticoBison.y"
+#line 78 "sintacticoBison.y"
     { (yyval.number) = (yyvsp[(1) - (3)].number) - (yyvsp[(3) - (3)].number); ;}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 78 "sintacticoBison.y"
+#line 81 "sintacticoBison.y"
     { (yyval.number) = (buscar(lista, (yyvsp[(1) - (1)].cadena))->info.valor); ;}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 79 "sintacticoBison.y"
+#line 82 "sintacticoBison.y"
     { (yyval.number) = (yyvsp[(1) - (1)].number) ; ;}
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 80 "sintacticoBison.y"
+#line 83 "sintacticoBison.y"
     { (yyval.number) = (yyvsp[(2) - (3)].number); ;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1506 "sintacticoBison.tab.c"
+#line 1509 "sintacticoBison.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1714,7 +1717,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 83 "sintacticoBison.y"
+#line 86 "sintacticoBison.y"
 
 
 
@@ -1728,7 +1731,18 @@ int yyerror(char *s)
 int main(int argc, char **argv)
 {
     yyparse();
+    liberarMemoria(lista);
     return 0;
+}
+
+void liberarMemoria(struct Nodo* lista) {
+    struct Nodo* p = lista;
+    while (p != NULL) {
+        free(p->info.nombre);
+        struct Nodo* temp = p;
+        p = p->sig;
+        free(temp);
+    }
 }
 
 int calcularEdad(int fechaActual, int fechaNacimiento) {
@@ -1772,14 +1786,14 @@ int calcularFecha(int anio, int mes, int dia){
 
 void asignarValorA(char* unIdentificador, int unValor) {
     struct Variable aux;
-    aux.nombre = unIdentificador;
+    aux.nombre = strdup(unIdentificador);
     aux.valor = unValor;
     insertar(lista, aux);
 }
 
 void cambiarValorA(char* unIdentificador, int unValor) {
     struct Variable aux;
-    aux.nombre = unIdentificador;
+    aux.nombre = strdup(unIdentificador);
     aux.valor = unValor;
     reemplazarEn(lista, unIdentificador, unValor);
 }
@@ -1805,10 +1819,13 @@ void insertar(struct Nodo*lista,struct Variable var)
 void reemplazarEn(struct Nodo*lista,char* unIdentificador, int unValor)
 {
     struct Nodo*objetivo=buscar(lista, unIdentificador);
-    if(objetivo == NULL)
-        printf("Esta intentando asignar %d a un identificador : %s que no existe", unValor, unIdentificador);
+    if(objetivo == NULL){
+    printf("Esta intentando asignar %d a un identificador : %s que no existe", unValor, unIdentificador);
+        exit(0);
+    }  
     else
         objetivo->info.valor = unValor;
+        
 }
 
 struct Nodo*buscar(struct Nodo*lista, char* unIdentificador)

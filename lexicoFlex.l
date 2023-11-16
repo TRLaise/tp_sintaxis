@@ -4,15 +4,64 @@
 #include <string.h>
 #include "sintacticoBison.tab.h"
 void errorLexico();
+
 %}
 
+%option yylineno
 
+DIGITO [0-9]
+LETRA ([a-z])
+GUION "_"
+IDENTIFICADOR {LETRA}(LETRA|GUION)*
+NUMERO {DIGITO}+
+BLANCO [ \t]
+NUEVALINEA \n
+
+%%
+
+"calcularFecha"  { yylval.reservada = strdup(yytext); return CALCULARFECHA; }
+"calcularEdad"   { yylval.reservada = strdup(yytext); return CALCULAREDAD; }
+"mostrarEdad"    { yylval.reservada = strdup(yytext); return MOSTRAREDAD; }
+
+"int"            { return ENTERO; }
+"inicio"         { return INICIO; }
+"fin"            { return FIN; }
+"es"             { yylval.reservada = strdup(yytext); return ASIGNACION; }
+
+{IDENTIFICADOR}   { yylval.reservada = strdup(yytext); return ID; }
+{NUMERO}         { yylval.number = atoi(yytext); return NUMERO; }
+
+"."              { return PUNTO; }
+","              { return COMA; }
+"("              { return PARENTESISIZQUIERDO; }
+")"              { return PARENTESISDERECHO; }
+"+"              { return SUMA; }
+"-"              { return RESTA; }
+
+{BLANCO}+        ; // para reconocer los espacios en blanco
+{NUEVALINEA}+    ; // para reconocer los saltos de línea
+
+.                { errorLexico(yytext); return OTHER; }
+
+%%
+
+void errorLexico(char* lexema) {
+    printf("Error léxico en la línea %d: Caracter no reconocido: %s\n", yylineno, lexema);
+    exit(EXIT_FAILURE);
+}
+
+int yywrap(){
+    return 1;
+}
+
+
+/*
 %option yylineno
 
 DIGITO ([0-9])
 LETRA ([a-z])
-GUION (_)
-/* {LETRA})({LETRA|GUION} */
+GUION ("_")
+/* {LETRA})({LETRA|GUION} 
 IDENTIFICADOR {LETRA}(LETRA|GUION)*
 NUMERO {DIGITO}({DIGITO})*
 
@@ -22,16 +71,15 @@ NUMERO {DIGITO}({DIGITO})*
 "calcularEdad" 		{yylval.reservada = yytext; return CALCULAREDAD;}
 "mostrarEdad" 		{yylval.reservada = yytext; return MOSTRAREDAD;}
 
-"int" 				{yylval.reservada = yytext; return ENTERO;}
+"int" 				 return ENTERO;
 
-"inicio" 			{ return INICIO;}
-"fin" 				{ return FIN;}
+"inicio" 			 return INICIO;
+"fin" 				 return FIN;
 
 "es" 				{yylval.reservada = yytext; return ASIGNACION;}
 
-{IDENTIFICADOR}     {yylval.reservada = yytext; return (ID);}
+{IDENTIFICADOR}     {yylval.reservada = yytext; return ID;}
 {NUMERO}      		{yylval.number = atoi(yytext); return NUMERO;}
-
 
 "." 				{return PUNTO;}
 "," 				{return COMA;}
