@@ -1,0 +1,12 @@
+inicio
+    int dia_n = 10.
+    int mes_n = 02.
+    int anio_n = 2004.
+    int dia_a = 16
+    int mes_a = 11.
+    int anio_a = 2023.
+    int fecha_nacimiento = calcularFecha(anio_n, mes_n, dia_n).
+    int fecha_actual = calcularFecha(anio_a, mes_a, dia_a).
+    int aux_edad = calcularEdad(fecha_actual, fecha_nacimiento).
+    mostrarEdad(aux_edad).
+fin
