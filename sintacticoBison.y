@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h> 
 
+extern int yylineno;
+
 struct Variable{
     char* nombre;
     int valor;
@@ -31,6 +33,8 @@ struct Nodo* lista = NULL;
 
 %}
 
+%error-verbose
+
 %token ASIGNACION PUNTO SUMA RESTA PARENTESISIZQUIERDO PARENTESISDERECHO COMA OTHER ID NUMERO CALCULARFECHA CALCULAREDAD MOSTRAREDAD INICIO FIN ENTERO
 
 %union{
@@ -43,35 +47,37 @@ struct Nodo* lista = NULL;
 %type <number> NUMERO EXPRESION PRIMARIA
 %type <reservada> MOSTRAREDAD CALCULARFECHA CALCULAREDAD INICIO FIN ENTERO
 
+%start prog
+
 %%
 
 prog: 
-    INICIO SENTENCIAS FIN
+    INICIO SENTENCIAS FIN;
 ;
 
-SENTENCIAS: SENTENCIA SENTENCIAS  
-        | SENTENCIA
+SENTENCIAS: SENTENCIAS SENTENCIA;
+        | SENTENCIA;
 ;
 
-SENTENCIA: ENTERO ID PUNTO {asignarValorA($2, 0);}
-        | ENTERO ID ASIGNACION NUMERO PUNTO { asignarValorA($2, $4); }
-        | ID ASIGNACION EXPRESION PUNTO { cambiarValorA($1, $3); }
-        | ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO { asignarValorA($1, calcularFecha($5, $7, $9)); } // SI ME DAN 3 NUMEROS
-        | ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO { asignarValorA($1, calcularEdad($5, $7)); } // SI ME DAN 2 NUMEROS
-        | ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID COMA ID PARENTESISDERECHO PUNTO { asignarValorA($1, calcularFecha(buscar(lista, $5)->info.valor, buscar(lista, $7)->info.valor, buscar(lista, $9)->info.valor)); } // SI ME DAN 3 IDENTIFICADORES
-        | ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO ID COMA ID PARENTESISDERECHO PUNTO { asignarValorA($1, calcularEdad(buscar(lista, $5)->info.valor, buscar(lista, $7)->info.valor)); } // SI ME DAN 2 IDENTIFICADORES
-        | MOSTRAREDAD PARENTESISIZQUIERDO ID PARENTESISDERECHO PUNTO { mostrarEdad(buscar(lista, $3)->info.valor) }
+SENTENCIA: ENTERO ID PUNTO {asignarValorA($2, 0);};
+        | ENTERO ID ASIGNACION NUMERO PUNTO { asignarValorA($2, $4); };
+        | ID ASIGNACION EXPRESION PUNTO { cambiarValorA($1, $3); };
+        | ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO { asignarValorA($1, calcularFecha($5, $7, $9)); }; // SI ME DAN 3 NUMEROS
+        | ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO { asignarValorA($1, calcularEdad($5, $7)); }; // SI ME DAN 2 NUMEROS
+        | ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO ID COMA ID COMA ID PARENTESISDERECHO PUNTO { asignarValorA($1, calcularFecha(buscar(lista, $5)->info.valor, buscar(lista, $7)->info.valor, buscar(lista, $9)->info.valor)); }; // SI ME DAN 3 IDENTIFICADORES
+        | ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO ID COMA ID PARENTESISDERECHO PUNTO { asignarValorA($1, calcularEdad(buscar(lista, $5)->info.valor, buscar(lista, $7)->info.valor)); }; // SI ME DAN 2 IDENTIFICADORES
+        | MOSTRAREDAD PARENTESISIZQUIERDO ID PARENTESISDERECHO PUNTO { mostrarEdad(buscar(lista, $3)->info.valor) };
 ;
 
 
-EXPRESION: PRIMARIA {$$ = $1; }
-        | EXPRESION SUMA PRIMARIA { $$ = $1 + $3; }
-        | EXPRESION RESTA PRIMARIA { $$ = $1 - $3; }
+EXPRESION: PRIMARIA {$$ = $1; };
+        | EXPRESION SUMA PRIMARIA { $$ = $1 + $3; };
+        | EXPRESION RESTA PRIMARIA { $$ = $1 - $3; };
 ; 
 
-PRIMARIA: ID { $$ = (buscar(lista, $1)->info.valor); }
-        |NUMERO { $$ = $1 ; }
-        |PARENTESISIZQUIERDO EXPRESION PARENTESISDERECHO { $$ = $2; }
+PRIMARIA: ID { $$ = (buscar(lista, $1)->info.valor); };
+        |NUMERO { $$ = $1 ; };
+        |PARENTESISIZQUIERDO EXPRESION PARENTESISDERECHO { $$ = $2; };
 ;
 
 %%
@@ -80,7 +86,7 @@ PRIMARIA: ID { $$ = (buscar(lista, $1)->info.valor); }
 
 int yyerror(char *s)
 {
-	printf(" -> Error sintactico \n", s);
+	printf(" -> Error sintactico en linea %d \n", yylineno);
 	return 0;
 }
 
