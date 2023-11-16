@@ -24,7 +24,6 @@ NUMERO {DIGITO}({DIGITO})*
 "inicio" {return INICIO;}
 "fin" {return FIN;}
 
-
 {IDENTIFICADOR}    {sscanf(yytext, "%s", yylval.name); return ID;}
 {ENTERO}      {yylval.number = atoi(yytext); return NUM;}
 
