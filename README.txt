@@ -2,6 +2,7 @@ Como ejecutar:
 	1- seguir el tutorial de este video de instalacion de flex y bison : https://youtu.be/yZ6Po_kEkD8?feature=shared
 	2- darle permiso a "compilar.sh" : abrir consola en carpeta y escribir "chmod +x compilar.sh"
 	3- compilar.sh : escribir en consola "./compilar.sh" -> se van a generar archivos en la carpeta
+	4- para compilar el codigo de entrada : en la consola escribir "./main <codigoDeEntrada.txt> "
 
 importante --- reglas ---
 	- no hay mayusculas

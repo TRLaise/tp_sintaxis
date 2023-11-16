@@ -26,7 +26,7 @@ NUMERO {DIGITO}({DIGITO})*
 
 "es" 				{yyval.reservada = yytext; return ASIGNACION;}
 
-{IDENTIFICADOR}     {sscanf(yytext, "%s", yylval.cad); return (ID);}
+{IDENTIFICADOR}     {sscanf(yytext, "%s", yylval.cadena); return (ID);}
 {NUMERO}      		{yylval.number = atoi(yytext); return NUMERO;}
 
 
@@ -36,16 +36,17 @@ NUMERO {DIGITO}({DIGITO})*
 ")" {return PARENTESISDERECHO;}
 "+" {return SUMA;}
 "-" {return RESTA;}
+[ \t\r]	{} // para reconocer los saltos de linea
 
 .   {errorLexico(); return(OTHER);}
 
 %%
-
+ 
 
 vvoid errorLexico(char* other){
 	printf("	<<ErrorLexico:  \"%s\" >>".other);
 	cout << "Error léxico: caracter \"" << yytext << "\" inválido. En linea " << yylineno << "." << endl;
-	exit(0);
+	exit(0); 
 }
 
 /*

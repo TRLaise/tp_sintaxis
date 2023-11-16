@@ -101,7 +101,7 @@ int calcularEdad(int fechaActual, int fechaNacimiento) {
         aux = 30 - edad_d;
         edad_d = aux;
     }
-    return edad_a * 10000 + edad_m * 100 + edad_d 
+    return edad_a * 10000 + edad_m * 100 + edad_d; 
 }
 
 void mostrarEdad ( int edad){
@@ -109,11 +109,11 @@ void mostrarEdad ( int edad){
     int edad_m = (edad % 10000 - edad_d) / 100;
     int edad_a = edad / 10000;
 
-    printf("Usted tiene %s años, %s meses y %s dias\n", edad_a, edad_m, edad_d);
+    printf("Usted tiene %d años, %d meses y %d dias\n", edad_a, edad_m, edad_d);
 }
 
 int calcularFecha(int anio, int mes, int dia){
-    return anio * 10000 + mes * 100 + dia
+    return anio * 10000 + mes * 100 + dia;
 }
 
 void asignarValorA(char* unIdentificador, int unValor) {
