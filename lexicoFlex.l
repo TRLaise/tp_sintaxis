@@ -13,9 +13,9 @@ DIGITO ["0-9"]
 LETRA ["a-z"]
 GUION ["_"]
 IDENTIFICADOR {LETRA}+({GUION}{LETRA}+)*
-NUMERO {DIGITO}({DIGITO})*
+NUMERO {DIGITO}+
 BLANCO [ "\t"]
-NUEVALINEA [ "\n"]
+NUEVALINEA [ \n]
 
 %%
 
@@ -31,9 +31,9 @@ NUEVALINEA [ "\n"]
 {BLANCO}+        ; // para reconocer los espacios en blanco
 {NUEVALINEA}+    ; // para reconocer los saltos de línea
 {IDENTIFICADOR}  { printf("Token tipo: IDENTIFICADOR %s \n ", yytext); yylval.reservada = strdup(yytext); return ID; }
-{NUMERO}         { yylval.number = atoi(yytext); return NUMERO; }
+{NUMERO}         { printf("Token tipo: ENTERO %s \n ", yytext); yylval.number = atoi(yytext); return NUMERO; }
 
-"."              { return PUNTO; }
+"."              { printf("Token tipo: PUNTO"); return PUNTO; }
 ","              { return COMA; }
 "("              { return PARENTESISIZQUIERDO; }
 ")"              { return PARENTESISDERECHO; }
