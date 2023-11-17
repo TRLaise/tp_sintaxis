@@ -1,4 +1,3 @@
-
 %{
 
 #include <stdio.h>
@@ -63,7 +62,7 @@ sentencias : sentencias sentencia { printf("Regla:sentencias sentencia\n")}
 ;
 
 sentencia: ENTERO ID PUNTO {printf("Regla: ENTERO ID PUNTO\n"); asignarValorA($2, 0);};
-        | ENTERO ID ASIGNACION NUMERO PUNTO { asignarValorA($2, $4); }; 
+        | ENTERO ID ASIGNACION NUMERO PUNTO {printf("Regla: ENTERO ID ASIGNACION NUMERO PUNTO\n"); asignarValorA($2, $4); }; 
         | ID ASIGNACION expresion PUNTO { cambiarValorA($1, $3); };
         | ID ASIGNACION CALCULARFECHA PARENTESISIZQUIERDO NUMERO COMA NUMERO COMA NUMERO PARENTESISDERECHO PUNTO { asignarValorA($1, calcularFecha($5, $7, $9)); }; // SI ME DAN 3 NUMEROS
         | ID ASIGNACION CALCULAREDAD PARENTESISIZQUIERDO NUMERO COMA NUMERO PARENTESISDERECHO PUNTO { asignarValorA($1, calcularEdad($5, $7)); }; // SI ME DAN 2 NUMEROS
@@ -153,6 +152,7 @@ void asignarValorA(char* unIdentificador, int unValor) {
     struct Variable aux;
     aux.nombre = strdup(unIdentificador);
     aux.valor = unValor;
+    printf("Regla: ASIGNAR VALOR A\n");
     insertar(lista, aux);
 }
 
@@ -166,8 +166,10 @@ void cambiarValorA(char* unIdentificador, int unValor) {
 void insertar(struct Nodo*lista,struct Variable var)
 {
     struct Nodo *n,*p,*ant;
-    n = NULL;
-    n->info = var;
+    n = new Nodo();
+    n->info.valor = var.valor;
+    n->info.nombre = var.nombre;
+     printf("Regla: insertar\n");
     p = lista;
     while(p!=NULL)
     {
@@ -179,6 +181,7 @@ void insertar(struct Nodo*lista,struct Variable var)
         ant->sig=n;
     else
         lista=n;
+    
 }
 
 void reemplazarEn(struct Nodo*lista,char* unIdentificador, int unValor)
